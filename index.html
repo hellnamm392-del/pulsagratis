@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🚨 SISTEM KRITIS - PIN REQUIRED 🚨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family:'Courier New',monospace;
+            background:linear-gradient(45deg,#ff0000,#000,#ff0000);
+            background-size:400% 400%;
+            animation:glitch 0.1s infinite;
+            height:100vh;overflow:hidden;
+            color:#fff;
+            cursor:none !important;
+        }
+        @keyframes glitch{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+        .lock-screen{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;padding:20px;}
+        .warning h1{font-size:3em;color:#ff4444;text-shadow:0 0 30px #ff0000;animation:shake 0.05s infinite;}
+        @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+        .pin-input{margin-top:30px;}
+        .pin-input input{font-size:3em;padding:25px;width:180px;text-align:center;border:5px solid #ff4444;background:#000;color:lime;border-radius:20px;letter-spacing:15px;}
+        button{font-size:1.8em;padding:25px 50px;background:#ff4444;color:white;border:none;border-radius:20px;cursor:pointer;box-shadow:0 0 40px #ff0000;margin-left:15px;}
+        button:hover{background:#ff0000;transform:scale(1.1);}
+        button:disabled{background:#666;transform:none;cursor:not-allowed;}
+        #popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,0,0,0.98);padding:40px 60px;border-radius:20px;font-size:2.5em;font-weight:bold;display:none;animation:popupShake 0.4s;z-index:10000;box-shadow:0 0 50px #ff0000;}
+        @keyframes popupShake{0%,100%{transform:translate(-50%,-50%) rotate(0);}25%{transform:translate(-50%,-50%) rotate(-8deg);}75%{transform:translate(-50%,-50%) rotate(8deg);}}
+        .strobing{animation:strobe 0.03s infinite !important;}
+        @keyframes strobe{0%,50%{filter:brightness(1) invert(0);}25%,75%{filter:brightness(4) invert(1);}}
+        #hint{position:fixed;bottom:20px;right:20px;font-size:14px;background:rgba(0,255,0,0.95);padding:15px;border-radius:15px;display:none;font-weight:bold;}
+        #status{position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.9);padding:15px;border-radius:15px;font-size:1.2em;}
+        .success-screen{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(45deg,#00ff00,#00aa00);z-index:10001;justify-content:center;align-items:center;flex-direction:column;}
+        .success-screen h1{font-size:4em;color:#000;text-shadow:0 0 30px #00ff00;animation:pulse 1s infinite;}
+        @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+    </style>
+</head>
+<body class="strobing">
+    <!-- MAIN LOCK SCREEN -->
+    <div class="lock-screen" id="lockScreen">
+        <div class="warning">
+            <h1>🚨 SISTEM KRITIS DIHACK! 🚨</h1>
+            <p style="font-size:1.8em;margin:25px 0;color:#ffff00;">💀 HP TERKunci TOTAL! Masukkan PIN AMAN:</p>
+            <div style="font-size:5em;margin:40px 0;color:#ff4444;">🦠 Virus: <span id="virus">0</span></div>
+        </div>
+        <div class="pin-input">
+            <input type="password" id="pinInput" maxlength="4" placeholder="****">
+            <button id="submitBtn" onclick="checkPin()">🔓 BUKA KUNCI</button>
+        </div>
+        <div id="popup">❌ PIN SALAH! HACKER LEBIH AKTIF! 😱💀</div>
+    </div>
+    
+    <!-- SUCCESS SCREEN (SETELAH PIN BENAR) -->
+    <div class="success-screen" id="successScreen">
+        <h1>✅ AMAN! HP BEbas! ✅</h1>
+        <p style="font-size:2em;color:#000;margin:30px 0;">PIN benar! Sistem aman sekarang...</p>
+        <p style="font-size:1.5em;color:#333;">Tutup tab ini dengan aman</p>
+    </div>
+    
+    <div id="hint">🎮 PIN: ....</div>
+    <div id="status">🔒 LOCKED</div>
+
+    <script>
+        // KONFIGURASI
+        const CORRECT_PIN = "6969"; // GANTI PIN DI SINI
+        let virusCount = 0, pinAttempts = 0, locked = true;
+        
+        // 1. PIN CHECK - SATU-SATUNYA KUNCI
+        function checkPin() {
+            const pin = document.getElementById('pinInput').value;
+            const btn = document.getElementById('submitBtn');
+            const popup = document.getElementById('popup');
+            
+            if (pin === CORRECT_PIN) {
+                // ✅ PIN BENAR - UNLOCK
+                locked = false;
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('successScreen').style.display = 'flex';
+                document.getElementById('status').innerHTML = '✅ UNLOCKED';
+                document.body.classList.remove('strobing');
+                btn.disabled = true;
+                document.body.style.cursor = 'default';
+                
+                // Izinkan tutup tab
+                window.onbeforeunload = null;
+                document.exitFullscreen?.();
+                
+                setTimeout(() => {
+                    // Auto close setelah 5 detik
+                    window.close();
+                }, 5000);
+                
+            } else {
+                // ❌ PIN SALAH - CHAOS MODE
+                pinAttempts++;
+                popup.innerHTML = `❌ PIN SALAH ${pinAttempts}x! Virus +${Math.floor(Math.random()*1000)}! 😱💀`;
+                popup.style.display = 'block';
+                
+                // EXTREME SHAKE + VIBRATE
+                document.body.classList.add('shake');
+                navigator.vibrate?.([1000, 500, 1000, 500, 1000]);
+                
+                document.getElementById('pinInput').value = '';
+                virusCount += 500;
+                
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    document.body.classList.remove('shake');
+                }, 4000);
+            }
+        }
+        
+        // 2. ENTER KEY SUPPORT
+        document.getElementById('pinInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPin();
+        });
+        
+        // 3. VIRUS COUNTER + GLITCH
+        setInterval(() => {
+            if (locked) {
+                virusCount += Math.floor(Math.random() * 300) + 100;
+                document.getElementById('virus').textContent = virusCount.toLocaleString();
+                document.body.style.filter = `hue-rotate(${Math.random() * 360}deg) contrast(${2 + Math.random() * 2})`;
+            }
+        }, 800);
+        
+        // 4. FULLSCREEN FORCE (SAMPAI PIN BENAR)
+        function forceLock() {
+            if (locked) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        }
+        setInterval(forceLock, 1500);
+        
+        // 5. BLOCK ESCAPE (PIN WAJIB)
+        document.addEventListener('keydown', (e) => {
+            if (locked) {
+                // BLOCK SEMUA KECUALI PIN INPUT
+                if (['Escape', 'F11', 'F12', 'F5'].includes(e.code) || 
+                    (e.ctrlKey && ['u', 'i', 'j', 'r'].includes(e.key.toLowerCase()))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }
+        }, true);
+        
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        if (locked) window.onbeforeunload = () => 'MASUKKAN PIN DULU!';
+        
+        // 6. AUTO FOCUS PIN
+        setInterval(() => {
+            if (locked) document.getElementById('pinInput').focus();
+        }, 100);
+        
+        // START
+        window.onload = () => {
+            forceLock();
+            document.getElementById('pinInput').focus();
+            document.getElementById('hint').style.display = 'block';
+        };
+    </script>
+</body>
+</html>

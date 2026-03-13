@@ -1,0 +1,22 @@
+{
+  "name": "prank-pentest-server",
+  "version": "1.0.0",
+  "description": "Prank payload delivery server for authorized pentesting",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "express": "^4.22.1",
+    "helmet": "^7.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
